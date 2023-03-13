@@ -10,7 +10,7 @@ pipeline {
         label 'docker-linux'
     }
     stages {
-        stage('Checkout') {
+        /* stage('Checkout') {
             steps {
                 // Get some code from a GitHub repository
                echo "${BRANCH_NAME}"
@@ -60,7 +60,7 @@ pipeline {
                     echo "OK"
                 }
             }
-        }
+        } */
 
         stage('SonarQube with SonarScannerCLI') {
             steps {
@@ -92,25 +92,5 @@ pipeline {
             }
         }
 
-        stage('SonarQube Jenkins Plugin') {
-            steps {
-                echo "${BRANCH_NAME}"
-                /* //withSonarQubeEnv(installationName: 'SonarQube (172.1.203.230)') {
-                    // This expands the evironment variables SONAR_CONFIG_NAME, SONAR_HOST_URL, SONAR_AUTH_TOKEN that can be used by any script.
-                    // println "${env.SONAR_HOST_URL}"
-                    println "${env.SONAR_AUTH_TOKEN}"
-                    println "${env.SONAR_CONFIG_NAME}"
-                    //sh "npm install -D typescript"
-                    // sudo apt install maven
-                    sh 'mvn clean package sonar:sonar'
-                } */
-            }
-        }
-
-        stage("Quality Gate") {
-            steps {
-                echo "Hello Quality Gate"
-            }
-        }
     }
 }
