@@ -10,6 +10,9 @@ pipeline {
         label 'docker-linux'
     }
     stages {
+        stage('SCM') {
+            git 'https://github.com/Algvaldivia/aspnetcore-realworld-example-app.git'
+        }
         stage('Checkout') {
             steps {
                 // Get some code from a GitHub repository
