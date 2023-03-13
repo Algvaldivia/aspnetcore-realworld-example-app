@@ -73,8 +73,11 @@ pipeline {
                     
                     sh label: 'Create SonarQube Cache Folder', script: "mkdir -p /jenkins_home/.sonar/cache"
 
+                    sh label: 'dotnet tool install', script: "\
+                        dotnet tool install --global dotnet-sonarscanner
+                    "
                     sh label: "SonarScanner.MSBuild.exe begin", script: "\
-                        dotnet-sonarscanner \
+                        dotnet sonarscanner \
                         begin /k:${JOB_BASE_NAME} \
                         /name:${JOB_NAME} \
                         /version:${BUILD_NUMBER} \
