@@ -11,7 +11,9 @@ pipeline {
     }
     stages {
         stage('SCM') {
-            git 'https://github.com/Algvaldivia/aspnetcore-realworld-example-app.git'
+            steps {
+                git 'https://github.com/Algvaldivia/aspnetcore-realworld-example-app.git'
+            }
         }
         stage('Checkout') {
             steps {
