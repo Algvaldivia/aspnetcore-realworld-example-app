@@ -70,19 +70,23 @@ pipeline {
                     println "${env.SONAR_AUTH_TOKEN}"
                     println "${env.SONAR_KEY}"
                     println "${env.SONAR_CONFIG_NAME}"
-                    echo "${WORKSPACE_TMP}"
+                    
                     sh label: 'Create SonarQube Cache Folder', script: "mkdir -p /jenkins_home/.sonar/cache"
-                    sh "docker run --interactive \
-                        --volume ${WORKSPACE}:/usr/src \
-                        --volume /jenkins_home/.sonar/cache:/opt/sonar-scanner/.sonar/cache \
-                        --rm sonarsource/sonar-scanner-cli \
-                        -D sonar.verbose=true \
-                        -D sonar.host.url=${SONAR_HOST_URL} \
-                        -D sonar.projectKey=${JOB_BASE_NAME} \
-                        -D sonar.projectName=${JOB_NAME} \
-                        -D sonar.projectVersion=${BUILD_NUMBER} \
-                        -D sonar.sources=/usr/src \
-                        -D sonar.login=${SONAR_AUTH_TOKEN} \
+
+                    sh label: "SonarScanner.MSBuild.exe begin", script: "\
+                        dotnet-sonarscanner \
+                        begin /k:${JOB_BASE_NAME} \
+                        /name:${JOB_NAME} \
+                        /version:${BUILD_NUMBER} \
+                        /d:sonar.login=${SONAR_AUTH_TOKEN} \
+                        /d:sonar.verbose=true \
+                        /d:sonar.host.url=${SONAR_HOST_URL} \
+                    "
+                    sh label: "MSBuild.exe", script: "\
+                        dotnet build ${WORKSPACE} \
+                    "
+                    sh label: "SonarScanner.MSBuild.exe end", script: "\
+                        dotnet sonarscanner end /d:sonar.login=${SONAR_AUTH_TOKEN} \
                     "
                 }
             }
