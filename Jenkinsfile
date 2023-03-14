@@ -121,7 +121,7 @@ pipeline {
                     """
 
                     powershell label: "SonarScanner.MSBuild.exe begin", script: """
-                        dotnet \'C:/ProgramData/SonarScanner for .NET 5+/SonarScanner.MSBuild.dll\' \`
+                        dotnet \'C:/ProgramData/SonarScanner for .NET 5+/SonarScanner.MSBuild.dll\' `
                         begin /k:${JOB_BASE_NAME}
                         /name:${JOB_NAME}
                         /version:${BUILD_NUMBER}
