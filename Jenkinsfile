@@ -117,11 +117,11 @@ pipeline {
                         Write-Output ${JOB_BASE_NAME}
                     """
                     echo "dotnet \'C:/ProgramData/SonarScanner for .NET 5+/SonarScanner.MSBuild.dll\' begin /k:${JOB_BASE_NAME} /name:${JOB_NAME} /version:${BUILD_NUMBER} /d:sonar.login=${SONAR_AUTH_TOKEN} /d:sonar.verbose=true /d:sonar.host.url=${SONAR_HOST_URL}"
-                    bat label: "SonarScanner.MSBuild.exe begin", script: """
+                    powershell label: "SonarScanner.MSBuild.exe begin", script: """
                         dotnet \'C:/ProgramData/SonarScanner for .NET 5+/SonarScanner.MSBuild.dll\' begin /k:${JOB_BASE_NAME} /name:${JOB_NAME} /version:${BUILD_NUMBER} /d:sonar.login=${SONAR_AUTH_TOKEN} /d:sonar.verbose=true /d:sonar.host.url=${SONAR_HOST_URL}
                     """
-                    bat label: "MSBuild.exe", script: "dotnet build \"${WORKSPACE}\""
-                    bat label: '"SonarScanner.MSBuild.exe end"', script: """
+                    powershell label: "MSBuild.exe", script: "dotnet build \"${WORKSPACE}\""
+                    powershell label: '"SonarScanner.MSBuild.exe end"', script: """
                         dotnet \'C:/ProgramData/SonarScanner for .NET 5+/SonarScanner.MSBuild.dll\' end /d:sonar.login=${SONAR_AUTH_TOKEN} /d:sonar.verbose=true
                     """
 
