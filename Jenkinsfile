@@ -76,9 +76,11 @@ pipeline {
                /*      sh label: 'dotnet tool install', script: "\
                         dotnet tool install --global dotnet-sonarscanner \
                     " */
-                    sh label: "SonarScanner.MSBuild.exe begin", script: "\
+                    sh label: 'Set PATH', script: '\
                         export PATH=$PATH:/root/.dotnet \
                         export PATH=$PATH:/root/.dotnet/tools \
+                    '
+                    sh label: "SonarScanner.MSBuild.exe begin", script: "\
                         dotnet sonarscanner \
                         begin /k:${JOB_BASE_NAME} \
                         /name:${JOB_NAME} \
