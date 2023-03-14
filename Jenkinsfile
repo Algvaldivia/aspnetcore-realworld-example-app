@@ -113,7 +113,6 @@ pipeline {
                         dotnet tool install --global dotnet-sonarscanner \
                     " */
 
-<<<<<<< HEAD
                     powershell label: '"SonarScanner.MSBuild.exe begin"', script: """ `
                         dotnet \'C:/ProgramData/SonarScanner for .NET 5+/SonarScanner.MSBuild.dll\' `
                         begin /k:${JOB_BASE_NAME} `
@@ -122,16 +121,6 @@ pipeline {
                         /d:sonar.login=${SONAR_AUTH_TOKEN} `
                         /d:sonar.verbose=true `
                         /d:sonar.host.url=${SONAR_HOST_URL} `
-=======
-                    powershell label: '"SonarScanner.MSBuild.exe begin"', script: """
-                        dotnet \'C:/ProgramData/SonarScanner for .NET 5+/SonarScanner.MSBuild.dll\' `
-                        begin /k:${JOB_BASE_NAME} `
-                        /name:${JOB_NAME}
-                        /version:${BUILD_NUMBER}
-                        /d:sonar.login=${SONAR_AUTH_TOKEN}
-                        /d:sonar.verbose=true
-                        /d:sonar.host.url=${SONAR_HOST_URL}
->>>>>>> 05435398273b32021b6630cfe91cc6ec9046cb09
                     """
                     powershell label: "MSBuild.exe", script: """
                         dotnet build ${WORKSPACE}
