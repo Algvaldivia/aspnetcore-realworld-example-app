@@ -125,7 +125,7 @@ pipeline {
                         dotnet build \"${WORKSPACE}\"
                     """
                     powershell label: '"SonarScanner.MSBuild.exe end"', script: """
-                        dotnet \'C:/ProgramData/SonarScanner for .NET 5+/SonarScanner.MSBuild.dll\' end /d:sonar.login=${SONAR_AUTH_TOKEN} /d:sonar.verbose=true
+                        dotnet \'C:/ProgramData/SonarScanner for .NET 5+/SonarScanner.MSBuild.dll\' end /d:sonar.login=${SONAR_AUTH_TOKEN}
                     """
 
                 }
