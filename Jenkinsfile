@@ -116,7 +116,7 @@ pipeline {
                     powershell """Write-Output `
                         ${JOB_BASE_NAME}"""
                     powershell """
-                        Write-Output \` 
+                        Write-Output ` 
                         ${JOB_BASE_NAME}
                     """
 
