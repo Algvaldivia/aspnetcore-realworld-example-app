@@ -79,6 +79,7 @@ pipeline {
                     sh label: 'Set PATH', script: '\
                         export PATH=$PATH:/root/.dotnet \
                         export PATH=$PATH:/root/.dotnet/tools \
+                        echo $PATH
                     '
                     sh label: "SonarScanner.MSBuild.exe begin", script: "\
                         dotnet sonarscanner \
