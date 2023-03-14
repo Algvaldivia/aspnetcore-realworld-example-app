@@ -7,7 +7,7 @@ pipeline {
         build_string = "${BRANCH_NAME}-${BUILD_ID}"
     }
     agent {
-        label 'docker-linux'
+        label 'dockerwin'
     }
     stages {
         /* stage('Checkout') {
@@ -62,7 +62,7 @@ pipeline {
             }
         } */
 
-        stage('SonarQube with Linux SonarScannerCLI') {
+/*         stage('SonarQube with Linux SonarScannerCLI') {
             steps {
                 withSonarQubeEnv(installationName: 'SonarQube (172.1.203.230)', envOnly: true) {
                     // This expands the evironment variables SONAR_CONFIG_NAME, SONAR_HOST_URL, SONAR_AUTH_TOKEN that can be used by any script.
@@ -73,9 +73,9 @@ pipeline {
                     
                     sh label: 'Create SonarQube Cache Folder', script: "mkdir -p /jenkins_home/.sonar/cache"
 
-               /*      sh label: 'dotnet tool install', script: "\
-                        dotnet tool install --global dotnet-sonarscanner \
-                    " */
+                    // sh label: 'dotnet tool install', script: "\
+                    // dotnet tool install --global dotnet-sonarscanner \
+
                     sh label: 'Set PATH', script: '\
                         export PATH=$PATH:/root/.dotnet \
                         export PATH=$PATH:/root/.dotnet/tools \
@@ -98,7 +98,43 @@ pipeline {
                     "
                 }
             }
+        } */
+
+        stage('SonarQube with Windows SonarScanner.MSBuild.dll"') {
+            steps {
+                withSonarQubeEnv(installationName: 'SonarQube (172.1.203.230)', envOnly: true) {
+                    // This expands the evironment variables SONAR_CONFIG_NAME, SONAR_HOST_URL, SONAR_AUTH_TOKEN that can be used by any script.
+                    println "${env.SONAR_HOST_URL}"
+                    println "${env.SONAR_AUTH_TOKEN}"
+                    println "${env.SONAR_KEY}"
+                    println "${env.SONAR_CONFIG_NAME}"
+                    
+               /*      sh label: 'dotnet tool install', script: "\
+                        dotnet tool install --global dotnet-sonarscanner \
+                    " */
+
+                    powershell label: '"SonarScanner.MSBuild.exe begin"', script: " `
+                        dotnet \'C:/ProgramData/SonarScanner for .NET 5+/SonarScanner.MSBuild.dll\'  `
+                        begin /k:${JOB_BASE_NAME} `
+                        /name:${JOB_NAME} `
+                        /version:${BUILD_NUMBER} `
+                        /d:sonar.login=${SONAR_AUTH_TOKEN} `
+                        /d:sonar.verbose=true `
+                        /d:sonar.host.url=${SONAR_HOST_URL} `
+                    "
+                    powershell label: "MSBuild.exe", script: "`
+                        dotnet build ${WORKSPACE} `
+                    "
+                    powershell label: '"SonarScanner.MSBuild.exe end"', script: " `
+                        dotnet \'C:/ProgramData/SonarScanner for .NET 5+/SonarScanner.MSBuild.dll\'  `
+                        end /d:sonar.login=${SONAR_AUTH_TOKEN} `
+                        /d:sonar.verbose=true `
+                    "
+
+                }
+            }
         }
+
 
     }
 }
