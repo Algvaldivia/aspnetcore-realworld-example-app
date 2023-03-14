@@ -113,7 +113,7 @@ pipeline {
                         dotnet tool install --global dotnet-sonarscanner \
                     " */
 
-                    powershell label: '"SonarScanner.MSBuild.exe begin"', script: """ \n
+                    powershell label: '"SonarScanner.MSBuild.exe begin"', script: """Read-Host 'sffgdsgnsk' \n
                         dotnet \'C:/ProgramData/SonarScanner for .NET 5+/SonarScanner.MSBuild.dll\' \n
                         begin /k:${JOB_BASE_NAME} \n
                         /name:${JOB_NAME} \n
