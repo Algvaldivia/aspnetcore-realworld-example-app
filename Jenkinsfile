@@ -120,8 +120,8 @@ pipeline {
                     powershell label: "SonarScanner.MSBuild.exe begin", script: """
                         dotnet \'C:/ProgramData/SonarScanner for .NET 5+/SonarScanner.MSBuild.dll\' begin /k:${JOB_BASE_NAME} /name:${JOB_NAME} /version:${BUILD_NUMBER} /d:sonar.login=${SONAR_AUTH_TOKEN} /d:sonar.verbose=true /d:sonar.host.url=${SONAR_HOST_URL}
                     """
+                        // Set-Location -Path \"\$env:ProgramData\"
                     powershell label: "MSBuild.exe", script: """
-                        Set-Location -Path \"\$env:ProgramData\"
                         dotnet build \"${WORKSPACE}\"
                     """
                     powershell label: '"SonarScanner.MSBuild.exe end"', script: """
