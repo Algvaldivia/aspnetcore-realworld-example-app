@@ -158,7 +158,7 @@ pipeline {
                         docker run --interactive \
                         --volume ${WORKSPACE}:/usr/src \
                         --rm mcr.microsoft.com/dotnet/sdk \
-                        export PATH=\"\$PATH:/root/.dotnet/tools\" \
+                        env PATH=\"\$PATH:/root/.dotnet/tools\" \
                         && dotnet tool install dotnet-sonarscanner -g \
                         && dotnet-sonarscanner begin /k:${JOB_BASE_NAME} /name:${JOB_NAME} /version:${BUILD_NUMBER} /d:sonar.login=${SONAR_AUTH_TOKEN} /d:sonar.verbose=true /d:sonar.host.url=${SONAR_HOST_URL} \
                         && dotnet build \"${WORKSPACE}\" \
