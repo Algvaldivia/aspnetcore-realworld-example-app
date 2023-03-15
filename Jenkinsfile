@@ -63,6 +63,9 @@ pipeline {
         } */
 
 /*         stage('SonarQube with Linux SonarScannerCLI') {
+            // Using SonarScannerCLI installed in local Linux host when Jenkins Agent is running
+            // INSTALL STEPS:
+            // dotnet tool install --global dotnet-sonarscanner
             steps {
                 withSonarQubeEnv(installationName: 'SonarQube (172.1.203.230)', envOnly: true) {
                     // This expands the evironment variables SONAR_CONFIG_NAME, SONAR_HOST_URL, SONAR_AUTH_TOKEN that can be used by any script.
@@ -100,7 +103,11 @@ pipeline {
             }
         } */
 
-        stage('SonarQube with Windows SonarScanner.MSBuild.dll"') {
+        /* stage('SonarQube with Windows SonarScanner.MSBuild.dll"') {
+            // Using SonarScanner.MSBuild.dll installed in local Windows host when Jenkins Agent is running
+            // INSTALL STEPS:
+            // dotnet tool install --global dotnet-sonarscanner
+            // 
             steps {
                 withSonarQubeEnv(installationName: 'SonarQube (172.1.203.230)', envOnly: true) {
                     // This expands the evironment variables SONAR_CONFIG_NAME, SONAR_HOST_URL, SONAR_AUTH_TOKEN that can be used by any script.
@@ -109,10 +116,6 @@ pipeline {
                     println "${env.SONAR_KEY}"
                     println "${env.SONAR_CONFIG_NAME}"
                     
-               /*      sh label: 'dotnet tool install', script: "\
-                        dotnet tool install --global dotnet-sonarscanner \
-                    " */
-
                     powershell """
                         Write-Output ${JOB_BASE_NAME}
                     """
@@ -127,6 +130,40 @@ pipeline {
                     powershell label: '"SonarScanner.MSBuild.exe end"', script: """
                         dotnet \'C:/ProgramData/SonarScanner for .NET 5+/SonarScanner.MSBuild.dll\' end /d:sonar.login=${SONAR_AUTH_TOKEN}
                     """
+
+                }
+            }
+        } */
+
+        stage('SonarQube with Linux SonarScannerNET') {
+            // Using SonarScannerNET installed in local Linux host when Jenkins Agent is running
+            // Docker Image: mcr.microsoft.com/dotnet/sdk
+            agent {
+                label 'docker-linux'
+            }
+            steps {
+                withSonarQubeEnv(installationName: 'SonarQube (172.1.203.230)', envOnly: true) {
+                    // This expands the evironment variables SONAR_CONFIG_NAME, SONAR_HOST_URL, SONAR_AUTH_TOKEN that can be used by any script.
+                    println "${env.SONAR_HOST_URL}"
+                    println "${env.SONAR_AUTH_TOKEN}"
+                    println "${env.SONAR_KEY}"
+                    println "${env.SONAR_CONFIG_NAME}"
+                    
+                    sh label: 'Create SonarQube Cache Folder', script: "mkdir -p /jenkins_home/.sonar/cache"
+
+                    // sh label: 'dotnet tool install', script: "\
+                    // dotnet tool install --global dotnet-sonarscanner \
+
+                    sh label: 'Running dotnet-sonarscanner', script: "\
+                        docker run --interactive \
+                        --volume ${WORKSPACE}:/usr/src \
+                        --rm mcr.microsoft.com/dotnet/sdk \
+                        export PATH=\"\$PATH:/root/.dotnet/tools\" \
+                        && dotnet tool install dotnet-sonarscanner -g \
+                        && dotnet-sonarscanner begin /k:${JOB_BASE_NAME} /name:${JOB_NAME} /version:${BUILD_NUMBER} /d:sonar.login=${SONAR_AUTH_TOKEN} /d:sonar.verbose=true /d:sonar.host.url=${SONAR_HOST_URL} \
+                        && dotnet build \"${WORKSPACE}\" \
+                        && dotnet-sonarscanner end /d:sonar.login=${SONAR_AUTH_TOKEN}
+                    "
 
                 }
             }
