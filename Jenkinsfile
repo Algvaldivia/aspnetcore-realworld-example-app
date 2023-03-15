@@ -159,7 +159,7 @@ pipeline {
                         --volume ${WORKSPACE}:/usr/src \
                         --rm mcr.microsoft.com/dotnet/sdk \
                         env PATH=\"\$PATH:/root/.dotnet/tools\" \
-                        && dotnet tool install dotnet-sonarscanner -g \
+                        && if ![ \"/root/.dotnet/tools/dotnet-sonarscanner\" ]; then dotnet tool install dotnet-sonarscanner -g fi \
                         && dotnet-sonarscanner begin /k:${JOB_BASE_NAME} /name:${JOB_NAME} /version:${BUILD_NUMBER} /d:sonar.login=${SONAR_AUTH_TOKEN} /d:sonar.verbose=true /d:sonar.host.url=${SONAR_HOST_URL} \
                         && dotnet build \"${WORKSPACE}\" \
                         && dotnet-sonarscanner end /d:sonar.login=${SONAR_AUTH_TOKEN} \
