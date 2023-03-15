@@ -162,7 +162,7 @@ pipeline {
                         && dotnet tool install dotnet-sonarscanner -g \
                         && dotnet-sonarscanner begin /k:${JOB_BASE_NAME} /name:${JOB_NAME} /version:${BUILD_NUMBER} /d:sonar.login=${SONAR_AUTH_TOKEN} /d:sonar.verbose=true /d:sonar.host.url=${SONAR_HOST_URL} \
                         && dotnet build \"${WORKSPACE}\" \
-                        && dotnet-sonarscanner end /d:sonar.login=${SONAR_AUTH_TOKEN}
+                        && dotnet-sonarscanner end /d:sonar.login=${SONAR_AUTH_TOKEN} \
                     "
 
                 }
